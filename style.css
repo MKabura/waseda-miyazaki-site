@@ -655,4 +655,14 @@ footer {
         margin-right: 0;
         margin-bottom: 1rem;
     }
+    /* 記事詳細ページの画像 */
+    .article-image {
+      width: 100%;
+      max-width: 800px;   /* PCでの最大幅 */
+      height: auto;
+      display: block;
+      margin: 20px auto;  /* 中央寄せ */
+      border-radius: 8px; /* 角を少し丸くする（任意） */
+}
+
 }
