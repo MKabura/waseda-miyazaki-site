@@ -28,7 +28,7 @@ function loadCategory() {
     };
 
     const script = document.createElement("script");
-    script.src = `https://script.google.com/macros/s/AKfycbytKfUXDJbkKFs-9eIgJ46c0dxPkuJEI1pRkJUjTVzH8FwqHolZjJCKKnnj6F-JSLwoWw/exec`;
+    script.src = `https://script.google.com/macros/s/AKfycbytKfUXDJbkKFs-9eIgJ46c0dxPkuJEI1pRkJUjTVzH8FwqHolZjJCKKnnj6F-JSLwoWw/exec?callback=${callbackName}`;
     document.body.appendChild(script);
 }
 
