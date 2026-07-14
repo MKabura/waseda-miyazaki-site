@@ -547,7 +547,7 @@ img {
     color: var(--waseda-maroon);
 }
 
-.contact-form-wrapper {
+/* .contact-form-wrapper {
     background: white;
     padding: 2.5rem;
     border-radius: 8px;
@@ -584,6 +584,27 @@ img {
 .form-group textarea:focus {
     outline: none;
     border-color: var(--waseda-maroon);
+} */
+
+/* フォームを包むコンテナの設定 */
+.form-container {
+  position: relative;
+  width: 100%;
+  /* 縦横比の調整：Googleフォームの長さに合わせて padding-top の数値を調整してください */
+  padding-top: 150%; 
+  height: 0;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+/* 中のiframeをコンテナいっぱいに広げる */
+.form-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 /* Footer */
