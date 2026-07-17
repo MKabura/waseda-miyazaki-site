@@ -1,6 +1,10 @@
-let observer; 
+let observer;
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Mobile Menu Toggle
+
+    /* ============================
+       共通：メニュー・アニメーション
+    ============================ */
     const mobileBtn = document.querySelector('.mobile-menu-btn');
     const mobileNav = document.querySelector('.mobile-nav');
 
@@ -8,9 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const spans = mobileBtn.querySelectorAll('span');
         mobileBtn.addEventListener('click', () => {
             mobileNav.classList.toggle('active');
-            
-            // Animate hamburger
-            // const spans = mobileBtn.querySelectorAll('span');
             if (mobileNav.classList.contains('active')) {
                 spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
                 spans[1].style.opacity = '0';
@@ -22,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Close menu when clicking a link
         const mobileLinks = mobileNav.querySelectorAll('a');
         mobileLinks.forEach(link => {
             link.addEventListener('click', () => {
@@ -34,36 +34,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Smooth Scroll for Anchor links (optional polish, reliable event delegation)
+    // Smooth Scroll
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
             if (targetId === '#') return;
-            
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
-                // Adjust for fixed header
                 const headerOffset = 80;
                 const elementPosition = targetElement.getBoundingClientRect().top;
                 const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
+                window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
             }
         });
     });
 
-    // Intersection Observer for scroll animations (fade in elements)
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: "0px"
-    };
-    
+    // Intersection Observer
+    const observerOptions = { threshold: 0.1, rootMargin: "0px" };
     observer = new IntersectionObserver((entries) => {
-    // const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
@@ -72,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, observerOptions);
 
-    // Add animation classes to elements
     const animatableElements = document.querySelectorAll('.news-card, .event-item, .contact-method, .section-header');
     animatableElements.forEach(el => {
         el.style.opacity = '0';
@@ -81,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 
-    // Custom visible class logic since we added inline styles above
     const styleSheet = document.createElement("style");
     styleSheet.textContent = `
         .visible {
@@ -90,27 +77,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     `;
     document.head.appendChild(styleSheet);
-    loadNews();
+
+    /* ============================
+       ページ判定
+    ============================ */
+    const path = window.location.pathname;
+
+    if (path.includes("index.html") || path === "/") {
+        loadIndex();
+    } else if (path.includes("category.html")) {
+        loadCategory();
+    } else if (path.includes("news.html")) {
+        loadArticle();
+    }
 });
 
-// =====  新着記事取得(data/news.json) =====
-async function loadNews() {
+
+/* ============================
+   1. トップページ（新着一覧）
+============================ */
+async function loadIndex() {
     const endpoint = "https://script.google.com/macros/s/AKfycbytKfUXDJbkKFs-9eIgJ46c0dxPkuJEI1pRkJUjTVzH8FwqHolZjJCKKnnj6F-JSLwoWw/exec";
     const res = await fetch(endpoint);
-    const data = await res.json();
-    renderNews(data);
-    // renderNews(data.contents);
+    const items = await res.json();
+    renderNews(items);
 }
 
 function renderNews(items) {
     const container = document.getElementById("news-list");
-    container.innerHTML = ""; // 初期化
+    container.innerHTML = "";
 
     items.forEach((item, index) => {
         const card = document.createElement("div");
         card.className = "news-card";
 
-        // 画像が空、または存在しない場合の判定
         const imageSrc = item.image ? `images/${item.image}` : 'images/logo.jpg';
 
         card.innerHTML = `
@@ -121,14 +121,12 @@ function renderNews(items) {
             <a href="${item.url || '#'}" class="more">続きを読む</a>
         `;
 
-        // 初期状態（非表示）
         card.style.opacity = '0';
         card.style.transform = 'translateY(20px)';
         card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
 
         container.appendChild(card);
 
-        // 次のフレームでアニメーション開始
         requestAnimationFrame(() => {
             setTimeout(() => {
                 card.style.opacity = '1';
@@ -136,6 +134,65 @@ function renderNews(items) {
             }, index * 150);
         });
     });
+}
+
+
+/* ============================
+   2. カテゴリページ
+============================ */
+async function loadCategory() {
+    const endpoint = "https://script.google.com/macros/s/AKfycbytKfUXDJbkKFs-9eIgJ46c0dxPkuJEI1pRkJUjTVzH8FwqHolZjJCKKnnj6F-JSLwoWw/exec";
+
+    const params = new URLSearchParams(window.location.search);
+    const category = params.get("cat");
+
+    document.getElementById("category-title").textContent = category;
+
+    const res = await fetch(endpoint);
+    const items = await res.json();
+
+    const filtered = items.filter(item => item.category === category);
+
+    const container = document.getElementById("category-list");
+    container.innerHTML = "";
+
+    filtered.forEach(item => {
+        const imageSrc = item.image ? `images/${item.image}` : 'images/logo.jpg';
+
+        container.innerHTML += `
+            <div class="news-card">
+                <img src="${imageSrc}" alt="">
+                <h3>${item.title}</h3>
+                <p class="date">${item.date}</p>
+                <p>${item.summary}</p>
+                <a href="${item.url}" class="more">続きを読む</a>
+            </div>
+        `;
+    });
+}
+
+
+/* ============================
+   3. 記事ページ（news.html）
+============================ */
+async function loadArticle() {
+    const endpoint = "https://script.google.com/macros/s/AKfycbytKfUXDJbkKFs-9eIgJ46c0dxPkuJEI1pRkJUjTVzH8FwqHolZjJCKKnnj6F-JSLwoWw/exec";
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    const res = await fetch(endpoint);
+    const items = await res.json();
+
+    const item = items.find(i => i.id === id);
+    if (!item) return;
+
+    document.getElementById("news-title").textContent = item.title;
+    document.getElementById("news-date").textContent = item.date;
+    document.getElementById("news-image").src = `images/${item.image}`;
+    document.getElementById("news-content").innerHTML = item.body;
+}
+
 }
 
 
