@@ -111,7 +111,7 @@ function renderNews(items) {
         const card = document.createElement("div");
         card.className = "news-card";
 
-        const imageSrc = item.image ? `images/${item.image}` : 'images/logo.jpg';
+        const imageSrc = item.image ? `./images/${item.image}` : './images/logo.jpg';
 
         card.innerHTML = `
             <img src="${imageSrc}" alt="" onerror="if (this.src !== 'images/logo.jpg') this.src = 'images/logo.jpg';">
@@ -157,7 +157,7 @@ async function loadCategory() {
     container.innerHTML = "";
 
     filtered.forEach(item => {
-        const imageSrc = item.image ? `images/${item.image}` : 'images/logo.jpg';
+        const imageSrc = item.image ? `./images/${item.image}` : './images/logo.jpg';
 
         container.innerHTML += `
             <div class="news-card">
@@ -189,7 +189,7 @@ async function loadArticle() {
 
     document.getElementById("news-title").textContent = item.title;
     document.getElementById("news-date").textContent = item.date;
-    document.getElementById("news-image").src = `images/${item.image}`;
+    document.getElementById("news-image").src = `./images/${item.image}`;
     document.getElementById("news-content").innerHTML = item.body;
 }
 
