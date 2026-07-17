@@ -193,6 +193,4 @@ async function loadArticle() {
     document.getElementById("news-content").innerHTML = item.body;
 }
 
-
-
 // loadNews();
