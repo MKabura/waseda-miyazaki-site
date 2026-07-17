@@ -192,10 +192,11 @@ async function loadArticle() {
     const item = items.find(i => i.id === id);
     if (!item) return;
 
-    document.getElementById("news-title").textContent = item.title;
-    document.getElementById("news-date").textContent = item.date;
-    document.getElementById("news-image").src = `./images/${item.image}`;
-    document.getElementById("news-content").innerHTML = item.body;
+    document.getElementById("article-title").textContent = item.title;
+    document.getElementById("article-date").textContent = item.date;
+    document.getElementById("article-image").src = `./images/${item.image}`;
+    document.getElementById("article-body").innerHTML = item.body;
+
 }
 
 // loadNews();
