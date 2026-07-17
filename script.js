@@ -84,17 +84,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname;
 
     if (
-        path === "/" ||
+        path.endsWith("/index.html") ||
         path === "/waseda-miyazaki-site/" ||
-        path.includes("index.html")
+        path === "/"
     ) {
         loadIndex();
-    } else if (path.includes("category.html")) {
+    } else if (path.endsWith("/category.html")) {
         loadCategory();
-    } else if (path.includes("news.html")) {
+    } else if (path.endsWith("/news.html")) {
         loadArticle();
     }
-
 
 });
 
